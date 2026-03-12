@@ -1,0 +1,57 @@
+# Proposed CCR prompting method with GPT-4o on GSM8K
+run_id: proposed-gpt4o-gsm8k
+
+method:
+  type: proposed
+  name: Commit-Check-Resolve
+  description: "CCR prompting with budgeted contingency"
+  prompt_template: |
+    You will solve a math word problem step by step using the Commit-Check-Resolve (CCR) method.
+    
+    Follow these three phases strictly:
+    
+    1. COMMIT (1-2 lines):
+       - Read the problem carefully
+       - State your chosen solving strategy in 1-2 lines
+       - Commit to one approach
+    
+    2. CHECK (after 3-5 reasoning steps):
+       - Perform your reasoning steps (max 5 steps)
+       - Then perform a mandatory micro-verification:
+         * Check arithmetic consistency
+         * Verify against question constraints
+       - State: "Check: [PASS/FAIL] - [reason]"
+    
+    3. RESOLVE:
+       - If check PASSED: output final answer
+       - If check FAILED: revise exactly ONE earlier step, then output final answer
+       - You may make at most ONE revision
+       - Keep total reasoning within 8 steps
+    
+    Problem: {question}
+    
+    Provide your solution following the CCR format above. End with "Final Answer: [number]"
+
+model:
+  provider: openai
+  name: gpt-4o
+  temperature: 0.0
+  max_tokens: 512
+  top_p: 1.0
+
+dataset:
+  name: gsm8k
+  split: test
+  subset_size: 200
+  subset_start: 0
+
+inference:
+  batch_size: 1
+  num_samples: 1
+  seed: 42
+  cache_dir: .cache
+
+evaluation:
+  primary_metric: accuracy
+  extract_answer_pattern: "Final Answer:\\s*([\\d,\\.]+)"
+  normalize_numbers: true
