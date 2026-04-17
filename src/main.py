@@ -13,7 +13,7 @@ def main():
     for i in range(1, 6):
         print(f"[{ts()}] 🟢 標準出力 | ステップ={i}", flush=True)
         print(f"[{ts()}] 🔴 標準エラー | ステップ={i}", file=sys.stderr, flush=True)
-        time.sleep(10)
+        time.sleep(20)
 
     print(f"[{ts()}] 🟢 標準出力 | 処理完了", flush=True)
 
